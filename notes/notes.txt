@@ -1,0 +1,8 @@
+REST
+
+REST no es un protocolo ni un estándar, sino que se trata de un conjunto de principios de arquitectura. 
+Los desarrolladores de las API pueden implementarlo de distintas maneras.
+
+Cuando se envía una solicitud a través de una API de RESTful, esta transfiere una representación del estado del recurso requerido a quien lo haya
+solicitado. La información se entrega por medio de HTTP en uno de estos formatos: JSON (Javascript Object Notation), HTML, XLT o texto sin formato.
+JSON es el más popular, ya que tanto las máquinas como las personas lo pueden comprender y no depende de ningún lenguaje. 

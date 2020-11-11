@@ -37,7 +37,7 @@ func (s Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 	s[user.Name] = user.Meta
 	message := models.Message{
-		Code:    200,
+		Code:    http.StatusCreated,
 		Message: fmt.Sprintf("Creado con exito el usuario %s", user.Name),
 	}
 
@@ -57,19 +57,36 @@ func (s Storage) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // UpdateUser updates a user
-func (s Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (s *Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	user, err := GetBody(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error al leer el body"))
 		return
 	}
-	_, ok := s[user.Name]
+	userMap, ok := (*s)[user.Name]
 	if ok != true {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error, el usuario no existe"))
 		return
 	}
+
+	userMap.Nickname = user.Meta.Nickname
+	userMap.Age = user.Meta.Age
+
+	message := models.MessageWithData{
+		Code: http.StatusOK,
+		Data: userMap,
+	}
+
+	JSON, err := json.Marshal(message)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error al convertir el mensaje"))
+		return
+	}
+	w.WriteHeader(message.Code)
+	w.Write(JSON)
 }
 
 // GetUser get one user by name or all users

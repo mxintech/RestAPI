@@ -8,6 +8,7 @@ type Message struct {
 
 // MessageWithData ...
 type MessageWithData struct {
-	Code int
-	Data interface{}
+	Code    int
+	Message string
+	Data    interface{}
 }

@@ -58,7 +58,18 @@ func (s Storage) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 // UpdateUser updates a user
 func (s Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
-
+	user, err := GetBody(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error al leer el body"))
+		return
+	}
+	_, ok := s[user.Name]
+	if ok != true {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error, el usuario no existe"))
+		return
+	}
 }
 
 // GetUser get one user by name or all users

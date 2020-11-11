@@ -1,26 +1,31 @@
 package user
 
 import (
+	"fmt"
 	"net/http"
 )
 
 var storage Storage
 
 func init() {
-	storage = make(map[string]*User)
+	storage = make(map[string]User)
 }
 
-type Storage map[string]*User
+type Storage map[string]User
 
 // User...
 type User struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+	Nickname string `json:"nickname"`
+	Age      int    `json:"age"`
 }
 
 // CreateUser creates a new user
-func (U *Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
-
+func (s Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
+	s["da"] = User{
+		Nickname: "a",
+		Age:      1,
+	}
+	fmt.Println(s)
 }
 
 // DeleteUser deletes a user

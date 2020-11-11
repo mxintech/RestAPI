@@ -53,8 +53,29 @@ func (s *Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteUser deletes a user
-func (s Storage) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (s *Storage) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	id := r.FormValue("name")
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error, debes enviar un nombre"))
+		return
+	}
 
+	delete((*s), id)
+
+	message := models.MessageWithData{
+		Code: http.StatusOK,
+		Data: s,
+	}
+
+	JSON, err := json.Marshal(message)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error al convertir el mensaje"))
+		return
+	}
+	w.WriteHeader(message.Code)
+	w.Write(JSON)
 }
 
 // UpdateUser updates a user

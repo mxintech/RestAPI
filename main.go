@@ -11,5 +11,6 @@ func main() {
 
 	http.HandleFunc("/user", user.HandleUser)
 
+	log.Println("Server started at http://localhost:3000")
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }

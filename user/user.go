@@ -1,45 +1,67 @@
 package user
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
+
+	"github.com/TheGolurk/RestAPI/models"
 )
 
 var storage Storage
 
 func init() {
-	storage = make(map[string]User)
+	storage = make(map[string]models.Meta)
 }
 
-type Storage map[string]User
+// Storage ....
+type Storage map[string]models.Meta
 
-// User...
-type User struct {
-	Nickname string `json:"nickname"`
-	Age      int    `json:"age"`
+// GetBody ....
+func GetBody(r *http.Request) (models.User, error) {
+	user := models.User{}
+	err := json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		return models.User{}, err
+	}
+	return user, nil
 }
 
 // CreateUser creates a new user
 func (s Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
-	s["da"] = User{
-		Nickname: "a",
-		Age:      1,
+	user, err := GetBody(r)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error al leer el body"))
+		return
 	}
-	fmt.Println(s)
+	s[user.Name] = user.Meta
+	message := models.Message{
+		Code:    200,
+		Message: "Creado con exito",
+	}
+
+	JSON, err := json.Marshal(message)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error al convertir el mensaje"))
+		return
+	}
+	w.WriteHeader(message.Code)
+	w.Write(JSON)
 }
 
 // DeleteUser deletes a user
-func (U *Storage) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (s Storage) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
 // UpdateUser updates a user
-func (U *Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
+func (s Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
 // GetUser get one user by name or all users
-func (U Storage) GetUser(w http.ResponseWriter, r *http.Request) {
+func (s Storage) GetUser(w http.ResponseWriter, r *http.Request) {
 
 }
 

@@ -17,7 +17,7 @@ func init() {
 // Storage ....
 type Storage map[string]models.Meta
 
-// GetBody ....
+// GetBody of request
 func GetBody(r *http.Request) (models.User, error) {
 	user := models.User{}
 	err := json.NewDecoder(r.Body).Decode(&user)
@@ -127,8 +127,8 @@ func (s Storage) GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(JSON)
 }
 
-// HandleUser handle method for request /user
-func HandleUser(w http.ResponseWriter, r *http.Request) {
+// HandleUserMethod handle method for request /user
+func HandleUserMethod(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		storage.GetUser(w, r)

@@ -28,14 +28,15 @@ func GetBody(r *http.Request) (models.User, error) {
 }
 
 // CreateUser creates a new user
-func (s Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
+func (s *Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user, err := GetBody(r)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error al leer el body"))
 		return
 	}
-	s[user.Name] = user.Meta
+
+	(*s)[user.Name] = user.Meta
 	message := models.Message{
 		Code:    http.StatusCreated,
 		Message: fmt.Sprintf("Creado con exito el usuario %s", user.Name),
@@ -64,19 +65,18 @@ func (s *Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error al leer el body"))
 		return
 	}
-	userMap, ok := (*s)[user.Name]
+	_, ok := (*s)[user.Name]
 	if ok != true {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Error, el usuario no existe"))
 		return
 	}
 
-	userMap.Nickname = user.Meta.Nickname
-	userMap.Age = user.Meta.Age
+	(*s)[user.Name] = user.Meta
 
 	message := models.MessageWithData{
 		Code: http.StatusOK,
-		Data: userMap,
+		Data: s,
 	}
 
 	JSON, err := json.Marshal(message)

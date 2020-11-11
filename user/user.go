@@ -2,6 +2,7 @@ package user
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/TheGolurk/RestAPI/models"
@@ -37,7 +38,7 @@ func (s Storage) CreateUser(w http.ResponseWriter, r *http.Request) {
 	s[user.Name] = user.Meta
 	message := models.Message{
 		Code:    200,
-		Message: "Creado con exito",
+		Message: fmt.Sprintf("Creado con exito el usuario %s", user.Name),
 	}
 
 	JSON, err := json.Marshal(message)
@@ -62,7 +63,19 @@ func (s Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 // GetUser get one user by name or all users
 func (s Storage) GetUser(w http.ResponseWriter, r *http.Request) {
+	message := models.MessageWithData{
+		Code: http.StatusOK,
+		Data: s,
+	}
 
+	JSON, err := json.Marshal(message)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Error al convertir el mensaje"))
+		return
+	}
+	w.WriteHeader(message.Code)
+	w.Write(JSON)
 }
 
 // HandleUser handle method for request /user

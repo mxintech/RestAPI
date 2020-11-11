@@ -3,7 +3,7 @@ package models
 // User ....
 type User struct {
 	Name string `json:"name"`
-	Meta Meta
+	Meta Meta   `json:"meta"`
 }
 
 // Meta ...

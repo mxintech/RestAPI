@@ -110,7 +110,7 @@ func (s *Storage) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write(JSON)
 }
 
-// GetUser get one user by name or all users
+// GetUser all users
 func (s Storage) GetUser(w http.ResponseWriter, r *http.Request) {
 	message := models.MessageWithData{
 		Code: http.StatusOK,
